@@ -26,23 +26,23 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-    int number;
-    int longestStreak;
-    int currentStreak;
-    List<Integer> factors = new ArrayList<Integer>();
-    List<Integer> others = new ArrayList<Integer>();
-    int[] options = new int[3];
-    int answer;
+    long number;
+    long longestStreak;
+    long currentStreak;
+    List<Long> factors = new ArrayList<Long>();
+    List<Long> others = new ArrayList<Long>();
+    long[] options = new long[3];
+    long answer;
     Button optionOneButton;
     Button optionTwoButton;
     Button optionThreeButton;
     Button resetButton;
-    int layout = 0;
-    int selected = -1;
+    long layout = 0L;
+    long selected = -1L;
     boolean hasVibrated = false;
     Vibrator vibrator;
     CountDownTimer countDownTimer;
-    long timeLeftInMillis = 10000;
+    long timeLeftInMillis = 10000L;
 
 
     @Override
@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getLongestStreak();
         if (savedInstanceState != null){
-            number = savedInstanceState.getInt("number");
-            answer = savedInstanceState.getInt("answer");
-            options = savedInstanceState.getIntArray("options");
-            layout = savedInstanceState.getInt("layout");
-            currentStreak = savedInstanceState.getInt("current_streak");
-            selected = savedInstanceState.getInt("selected");
+            number = savedInstanceState.getLong("number");
+            answer = savedInstanceState.getLong("answer");
+            options = savedInstanceState.getLongArray("options");
+            layout = savedInstanceState.getLong("layout");
+            currentStreak = savedInstanceState.getLong("current_streak");
+            selected = savedInstanceState.getLong("selected");
             hasVibrated = savedInstanceState.getBoolean("has_vibrated");
             timeLeftInMillis = savedInstanceState.getLong("time_left_in_millis");
         }
@@ -82,12 +82,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt("layout", layout);
-        outState.putIntArray("options", options);
-        outState.putInt("answer", answer);
-        outState.putInt("current_streak", currentStreak);
-        outState.putInt("number", number);
-        outState.putInt("selected", selected);
+        outState.putLong("layout", layout);
+        outState.putLongArray("options", options);
+        outState.putLong("answer", answer);
+        outState.putLong("current_streak", currentStreak);
+        outState.putLong("number", number);
+        outState.putLong("selected", selected);
         outState.putBoolean("has_vibrated", hasVibrated);
         outState.putLong("time_left_in_millis", timeLeftInMillis);
     }
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         if (numberTextView.getText().toString().equals("")){
             return;
         }
-        number = Integer.parseInt(numberTextView.getText().toString());
+        number = Long.parseLong(numberTextView.getText().toString());
         if(number <=0){
             TextView enterNumberText = (TextView) findViewById(R.id.enter_number_warning_text_view);
             enterNumberText.setVisibility(View.VISIBLE);
@@ -135,9 +135,9 @@ public class MainActivity extends AppCompatActivity {
             options[1] = others.get(rand.nextInt(others.size()));
             options[2] = others.get(rand.nextInt(others.size()));
         }
-        int temp;
+        long temp;
         answer = rand.nextInt(3);
-        switch(answer){
+        switch((int) answer){
             case 1:
                 temp = options[0];
                 options[0] = options[1];
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void calculateFactors(){
-        for(int i = 1; i <= number; i++){
+        for(long i = 1; i <= number; i++){
             if(number % i == 0){
                 factors.add(i);
             }
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         factors.add(number);
-        others.add(0);
+        others.add(0L);
         others.add(number+1);
     }
 
@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
         timeLeftInMillis = 10000;
         countDownTimer.cancel();
         options[0] = options[1] = options[2] = 0;
+        resetButton.setVisibility(View.INVISIBLE);
     }
 
     private void displayStreaks(){
@@ -192,17 +193,18 @@ public class MainActivity extends AppCompatActivity {
     private void saveLongestStreak(){
         SharedPreferences sharedPref = getSharedPreferences("quizInfo", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt("longest_streak", longestStreak);
+        editor.putLong("longest_streak", longestStreak);
         editor.apply();
     }
 
     private void getLongestStreak(){
         SharedPreferences sharedPref = getSharedPreferences("quizInfo", Context.MODE_PRIVATE);
-        longestStreak = sharedPref.getInt("longest_streak", 0);
+        longestStreak = sharedPref.getLong("longest_streak", 0L);
     }
 
 
     public void selectOption(View view){
+        resetButton.setVisibility(View.VISIBLE);
         countDownTimer.cancel();
         if (view.getId() == optionOneButton.getId()){
             selected = 0;
@@ -216,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         optionOneButton.setClickable(false);
         optionTwoButton.setClickable(false);
         optionThreeButton.setClickable(false);
-        switch (answer){
+        switch ((int) answer){
             case 0:
                 optionOneButton.setBackgroundColor(getResources().getColor(R.color.sucessGreen));
                 break;
@@ -246,8 +248,8 @@ public class MainActivity extends AppCompatActivity {
         displayStreaks();
     }
 
-    private void selectSavedOption(int selected){
-        switch (selected){
+    private void selectSavedOption(long selected){
+        switch ((int) selected){
             case 0:
                 selectOption(optionOneButton);
                 break;
@@ -280,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopGame(){
+        resetButton.setVisibility(View.VISIBLE);
         TextView timerTextView = (TextView) findViewById(R.id.timer_text_view);
         timerTextView.setText("Time Over");
         optionOneButton.setClickable(false);
@@ -288,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
         optionOneButton.setBackgroundColor(getResources().getColor(R.color.failureRed));
         optionTwoButton.setBackgroundColor(getResources().getColor(R.color.failureRed));
         optionTwoButton.setBackgroundColor(getResources().getColor(R.color.failureRed));
-        switch (answer){
+        switch ((int) answer){
             case 0:
                 optionOneButton.setBackgroundColor(getResources().getColor(R.color.sucessGreen));
                 break;

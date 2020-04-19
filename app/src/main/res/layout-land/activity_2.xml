@@ -53,7 +53,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:onClick="reset"
-        android:visibility="visible"
+        android:visibility="invisible"
         tools:visibility="visible"/>
 
     <LinearLayout
